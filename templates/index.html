@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Processing</title>
+    <style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: auto auto;
+        }
+        .grid-item {
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Image Processing Results</h1>
+
+<form action="/upload" method="post" enctype="multipart/form-data">
+    <input type="file" name="file">
+    <input type="submit" value="Upload">
+</form>
+
+{% if original %}
+<div class="grid-container">
+    <div class="grid-item">
+        <h2>Original</h2>
+        <img src="{{ url_for('static', filename=original) }}" alt="Original Image" width="250">
+    </div>
+    <div class="grid-item">
+        <h2>Resized</h2>
+        <img src="{{ url_for('static', filename=resized) }}" alt="Resized Image" width="250">
+    </div>
+    <div class="grid-item">
+        <h2>Gray</h2>
+        <img src="{{ url_for('static', filename=gray) }}" alt="Gray Image" width="250">
+    </div>
+    <div class="grid-item">
+        <h2>Edges</h2>
+        <img src="{{ url_for('static', filename=edges) }}" alt="Edges Image" width="250">
+    </div>
+</div>
+{% endif %}
+
+</body>
+</html>
