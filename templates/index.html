@@ -18,8 +18,17 @@
 <h1>Image Processing Results</h1>
 
 <form action="/upload" method="post" enctype="multipart/form-data">
-    <input type="file" name="file">
-    <input type="submit" value="Upload">
+    <input type="file" name="file"><br>
+    <label for="gray_levels">灰度级:</label>
+    <input type="number" id="gray_levels" name="gray_levels"><br>
+    <label for="resolution">分辨率:</label>
+    <input type="number" id="resolution" name="resolution"><br>
+    <label for="distance_metric">距离量度:</label>
+    <select id="distance_metric" name="distance_metric">
+        <option value="l1">L1</option>
+        <option value="l2">L2</option>
+    </select><br>
+    <input type="submit" value="上传">
 </form>
 
 {% if original %}
@@ -29,15 +38,15 @@
         <img src="{{ url_for('static', filename=original) }}" alt="Original Image" width="250">
     </div>
     <div class="grid-item">
-        <h2>Resized</h2>
-        <img src="{{ url_for('static', filename=resized) }}" alt="Resized Image" width="250">
+        <h2>Resolution ({{ resolution_percent }}%)</h2>
+        <img src="{{ url_for('static', filename=resolution) }}" alt="Resolution Image" width="250">
     </div>
     <div class="grid-item">
-        <h2>Gray</h2>
+        <h2>Gray ({{ gray_levels }} Levels)</h2>
         <img src="{{ url_for('static', filename=gray) }}" alt="Gray Image" width="250">
     </div>
     <div class="grid-item">
-        <h2>Edges</h2>
+        <h2>Edges ({{ distance_metric }} Metric)</h2>
         <img src="{{ url_for('static', filename=edges) }}" alt="Edges Image" width="250">
     </div>
 </div>
