@@ -1,6 +1,4 @@
 import cv2
-import numpy as np
-
 
 def adjust_gray_levels(image, gray_levels):
     # 计算每个新灰度级的范围大小
