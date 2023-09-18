@@ -17,7 +17,6 @@ def adjust_resolution(image, resolution):
 
 
 def binarize_image(image):
-    # 确保图像是灰度图像
     if len(image.shape) == 3:
         image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
@@ -26,45 +25,42 @@ def binarize_image(image):
     return binary_image
 
 
-# 4连通
 def four_connected(x, y):
     return [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]
 
 
-# 8连通
 def eight_connected(x, y):
     return [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1),
             (x - 1, y - 1), (x + 1, y + 1), (x - 1, y + 1), (x + 1, y - 1)]
 
 
 def detect_edges(image, metric):
-    if metric == 'l1':
-        return cv2.Canny(image, 100, 200)
-    elif metric == 'l2':
-        return cv2.Laplacian(image, cv2.CV_64F)
-    elif metric in ['内部点8连通，轮廓点4连通', '内部点4连通，轮廓点8连通']:
-        binary_image = binarize_image(image)
-        zero_count = np.sum(binary_image == 0)
-        non_zero_count = np.sum(binary_image == 255)
+    binary_image = binarize_image(image)
+    edges = np.zeros_like(binary_image, dtype=np.uint8)
 
-        edge_value = 255 if zero_count > non_zero_count else 0
-        inner_value = 0 if edge_value == 255 else 255
+    height, width = binary_image.shape
 
-        edges = np.zeros_like(binary_image)
-        height, width = binary_image.shape[:2]
+    inner_func = eight_connected if metric == '内部点8连通，轮廓点4连通' else four_connected
+    edge_func = four_connected if metric == '内部点8连通，轮廓点4连通' else eight_connected
 
-        for x in range(1, height - 1):
-            for y in range(1, width - 1):
-                if binary_image[x, y] == inner_value:
-                    continue
+    for x in range(1, height - 1):
+        for y in range(1, width - 1):
+            pixel = binary_image[x, y]
 
-                edge_neighbors = four_connected(x, y) if metric == 'l3' else eight_connected(x, y)
-                is_edge = any(binary_image[i, j] == edge_value for i, j in edge_neighbors)
+            inner_neighbors = inner_func(x, y)
+            is_inner = all(
+                0 <= i < height and 0 <= j < width and binary_image[i, j] == pixel for i, j in inner_neighbors)
 
-                if is_edge:
-                    edges[x, y] = edge_value
+            if is_inner:
+                continue
 
-        return edges
+            edge_neighbors = edge_func(x, y)
+            is_edge = any(0 <= i < height and 0 <= j < width and binary_image[i, j] != pixel for i, j in edge_neighbors)
+
+            if is_edge:
+                edges[x, y] = 255  # Set the edge pixel to white
+
+    return edges
 
 
 def process_image(image_path, gray_levels=None, resolution=None, distance_metric=None):
