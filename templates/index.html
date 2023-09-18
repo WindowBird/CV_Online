@@ -9,7 +9,7 @@
 <body>
 
 <div class="container mt-5">
-    <h1 class="text-center">Image Processing Results</h1>
+    <h1 class="text-center">WindowBird's Image Processing Results</h1>
     <form action="/upload" method="post" enctype="multipart/form-data" class="mt-4">
         <div class="mb-3">
             <input type="file" class="form-control" name="file" required>
@@ -24,6 +24,8 @@
             <select class="form-control" id="distance_metric" name="distance_metric">
                 <option value="l1">L1</option>
                 <option value="l2">L2</option>
+                <option value="内部点8连通，轮廓点4连通">内部点8连通，轮廓点4连通</option>
+                <option value="内部点4连通，轮廓点8连通">内部点4连通，轮廓点8连通</option>
             </select>
         </div>
         <button type="submit" class="btn btn-primary">上传</button>
@@ -66,7 +68,7 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-header">
-                    Edges ({{ distance_metric }} Metric)
+                    Edges ({{ distance_metric }} )
                 </div>
                 <div class="card-body">
                     <img src="{{ url_for('static', filename=edges) }}" alt="Edges Image" class="img-fluid">
