@@ -1,6 +1,6 @@
 import cv2
 from flask import Blueprint, request, render_template, current_app
-from image_processing.process_image import process_image
+from image_processing.edge_detection import process_image
 import os
 
 api = Blueprint('api', __name__)
@@ -40,7 +40,7 @@ def upload_file():
         cv2.imwrite(gray_path, resized_gray)
         cv2.imwrite(edges_path, resized_edges)
 
-        return render_template("index.html",
+        return render_template("edge_detection.html",
                                original='uploads/' + file.filename,
                                resolution='uploads/' + "resolution_" + file.filename,
                                gray='uploads/' + "gray_" + file.filename,
